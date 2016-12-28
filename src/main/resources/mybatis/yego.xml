@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yego">
+	<insert id="create" parameterType="YegoVO">
+		insert into yego(yegono,yegotitle,yegoimage,yegothumb,file3)
+		values((select NVL(max(yegono),0)+1 as yegono from
+		yego),#{yegotitle},#{yegoimage},#{yegothumb},#{file3})
+	</insert>
+
+	<select id="list" resultType="YegoVO">
+		select * from yego
+		order by yegono desc
+	</select>
+
+	<select id="read" resultType="YegoVO" parameterType="int">
+		select * from yego
+		where yegono=#{yegono}
+	</select>
+
+	<update id="update" parameterType="YegoVO">
+		update yego
+		set
+		yegotitle=#{yegotitle},yegoimage=#{yegoimage},yegothumb=#{yegothumb},file3=#{file3}
+		where yegono=#{yegono}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from yego
+		where yegono=#{yegono}
+	</delete>
+
+
+</mapper>
+
+

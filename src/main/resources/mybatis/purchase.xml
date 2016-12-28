@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="purchase">
+
+	<insert id="create" parameterType="PurchaseVO">
+		INSERT INTO
+		purchase(purnum,midnum, mno, purreg)
+		VALUES((SELECT
+		NVL(MAX(purnum), 0) + 1 as purnum FROM purchase),
+		#{midnum}, #{mno},
+		sysdate)
+	</insert>
+
+	<select id="list" resultType="Mid_PurchaseVO">
+		SELECT m.mno, m.id,d.midnum,d.genre,d.thumb1, d.midtitle, d.price,
+		d.regdate, d.watch, p.purnum, p.midnum
+		FROM purchase p, mid d , member m
+		WHERE p.midnum = d.midnum AND m.mno = p.mno
+		ORDER BY d.midnum ASC, d.midtitle ASC
+	</select>
+
+	<select id="pur_list" resultType="Mid_PurchaseVO">
+		SELECT d.midnum,d.midtitle,
+		d.thumb1,d.price,'20'||to_char(to_date(p.purreg)) as purreg,
+		'20'||to_char(to_date(p.purreg + d.watch)) as purreg1, d.watch
+		FROM purchase p, mid d
+		WHERE p.midnum = d.midnum
+	</select>
+
+	<select id="purchase" resultType="Mid_PurchaseVO">
+		SELECT DISTINCT d.midtitle, d.thumb1,d.watch ,d.price
+		FROM purchase p, mid d
+		WHERE d.midnum = #{midnum}
+	</select>
+
+	<delete id="delete" parameterType="int">
+		DELETE FROM purchase
+		WHERE
+		purnum = #{purnum}
+	</delete>
+
+
+
+</mapper>

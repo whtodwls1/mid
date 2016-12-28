@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="category">
+	<insert id="create" parameterType="CategoryVO">
+		INSERT INTO category(categoryno, title, seqno, visible, ids)
+		VALUES((SELECT NVL(MAX(categoryno), 0)+1 as categoryno FROM category),
+		#{title} , #{seqno} , #{visible}, #{ids})
+	</insert>
+
+	<select id="list" resultType="CategoryVO">
+		SELECT categoryno, title, seqno, visible, ids, cnt
+		FROM category
+		ORDER BY seqno ASC
+	</select>
+
+	<select id="read" resultType="CategoryVO" parameterType="int">
+		SELECT categoryno, title, seqno, visible, ids
+		FROM category
+		WHERE categoryno = #{categoryno}
+	</select>
+
+	<update id="update" parameterType="CategoryVO">
+		UPDATE category
+		SET title=#{title}, seqno=#{seqno}, visible=#{visible}, ids=#{ids}
+		WHERE categoryno = #{categoryno}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		DELETE FROM category
+		WHERE categoryno = #{categoryno}
+	</delete>
+
+	<update id="up" parameterType="int">
+		UPDATE category
+		SET seqno = seqno - 1
+		WHERE categoryno=#{categoryno}
+	</update>
+
+	<update id="down" parameterType="int">
+		UPDATE category
+		SET seqno = seqno + 1
+		WHERE categoryno=#{categoryno}
+	</update>
+
+	<update id="increaseCnt" parameterType="int">
+		UPDATE category
+		SET cnt = cnt + 1
+		WHERE categoryno=#{categoryno}
+	</update>
+
+	<update id="decreaseCnt" parameterType="int">
+		UPDATE category
+		SET cnt = cnt - 1
+		WHERE categoryno=#{categoryno}
+	</update>
+
+	<select id="count" resultType="int">
+		SELECT count(*) as cnt
+		FROM category
+	</select>
+
+</mapper>
+
+
+
+
+
+
+

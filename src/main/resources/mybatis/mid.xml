@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mid">
+	<insert id="create" parameterType="MidVO">
+		insert into
+		mid(midnum,genre,midtitle,thumb1,poster,file2,midcontent,price,watch,viewcnt,regdate,midlike)
+		values((select NVL(max(midnum),0)+1 as midnum from
+		mid),#{genre},#{midtitle},#{thumb1},#{poster},#{file2},#{midcontent},#{price},#{watch},#{viewcnt},sysdate,0)
+	</insert>
+
+	<select id="list" resultType="MidVO">
+		select * from MID
+		order by midnum desc
+	</select>
+
+	<select id="read" resultType="MidVO" parameterType="int">
+		select * from MID
+		where midnum=#{midnum}
+	</select>
+
+	<update id="update" parameterType="MidVO">
+		update mid
+		set midtitle=#{midtitle}, genre=#{genre},
+		thumb1=#{thumb1},poster=#{poster},file2=#{file2},price=#{price},midcontent=#{midcontent},watch=#{watch},viewcnt=#{viewcnt},regdate=sysdate
+		where midnum=#{midnum}
+	</update>
+
+	<update id="uplike" parameterType="MidVO">
+		update mid
+		set midlike=#{midlike}
+		where midnum=#{midnum}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from MID
+		where midnum=#{midnum}
+	</delete>
+
+	<update id="viewcnt" parameterType="MidVO">
+		update mid
+		set viewcnt=viewcnt+1
+		where midnum=#{midnum}
+	</update>
+
+	<!-- 같은 이름 장르 -->
+	<select id="listgenre" resultType="MidVO" parameterType="String">
+		select * from MID
+		where genre =#{genre}
+	</select>
+
+	<!-- 같은 이름 타이틀 -->
+	<select id="listtitle" resultType="Mid_PurchaseVO"
+		parameterType="String">
+		SELECT distinct d.midnum,d.midtitle,
+		d.thumb1,d.price,'20'||to_char(to_date(p.purreg)) as purreg,
+		'20'||to_char(to_date(p.purreg + d.watch)) as purreg1, d.watch
+		FROM purchase p, mid d
+		WHERE midtitle LIKE '%' || #{word} || '%'
+	</select>
+ <select id="midtitle" resultType="MidVO">
+ select *
+ from mid 
+where midtitle LIKE '%' || #{word} || '%'
+ </select>
+</mapper>
+
+
